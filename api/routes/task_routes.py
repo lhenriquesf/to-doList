@@ -8,15 +8,20 @@ import json
 
 task_router = APIRouter(prefix="/api", tags=["Task"])
 
+# @task_router.get("/")
+# async def get_task():
+#     cached_tasks = redis_client.get("tasks")
+#     if cached_tasks:
+#         return json.loads(cached_tasks)
+    
+#     tasks = await GetTask.from_queryset(Task.all())
+#     tasks_json = jsonable_encoder(tasks)
+#     redis_client.set("tasks", json.dumps(tasks_json))
+#     return tasks
+
 @task_router.get("/")
 async def get_task():
-    cached_tasks = redis_client.get("tasks")
-    if cached_tasks:
-        return json.loads(cached_tasks)
-    
     tasks = await GetTask.from_queryset(Task.all())
-    tasks_json = jsonable_encoder(tasks)
-    redis_client.set("tasks", json.dumps(tasks_json))
     return tasks
 
 
@@ -39,7 +44,7 @@ async def update_task(key: int, body: PutTask):
     exists_task = await Task.filter(id=key).exists()
     
     if not exists_task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarefa não encontrada")
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
     
     await Task.filter(id=key).update(**data)
 
@@ -55,7 +60,7 @@ async def delete_task(key: int):
     exists_task = await Task.filter(id=key).exists()
     
     if not exists_task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarefa não encontrada")
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
  
     await Task.filter(id=key).delete()
 
