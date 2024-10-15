@@ -8,21 +8,21 @@ import json
 
 task_router = APIRouter(prefix="/api", tags=["Task"])
 
-# @task_router.get("/")
-# async def get_task():
-#     cached_tasks = redis_client.get("tasks")
-#     if cached_tasks:
-#         return json.loads(cached_tasks)
-    
-#     tasks = await GetTask.from_queryset(Task.all())
-#     tasks_json = jsonable_encoder(tasks)
-#     redis_client.set("tasks", json.dumps(tasks_json))
-#     return tasks
-
 @task_router.get("/")
 async def get_task():
+    cached_tasks = redis_client.get("tasks")
+    if cached_tasks:
+        return json.loads(cached_tasks)
+    
     tasks = await GetTask.from_queryset(Task.all())
+    tasks_json = jsonable_encoder(tasks)
+    redis_client.set("tasks", json.dumps(tasks_json))
     return tasks
+
+# @task_router.get("/")
+# async def get_task():
+#     tasks = await GetTask.from_queryset(Task.all())
+#     return tasks
 
 
 @task_router.post("/",dependencies = [Depends(dependency=get_current_user)], status_code=201)
