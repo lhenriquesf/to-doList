@@ -12,9 +12,9 @@ load_dotenv()
 app = FastAPI()
 
 origins = [
+    "https://frontend-todo-list-chi.vercel.app/",
     "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "https://frontend-todo-list-chi.vercel.app/"
+    "http://127.0.0.1:5500"
 ]
 
 app.add_middleware(
