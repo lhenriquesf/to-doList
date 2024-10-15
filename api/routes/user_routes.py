@@ -1,5 +1,5 @@
 from api.auth import create_access_token, authenticate_user, Token
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from api.schemas.user_schemas import UserCreate
 from passlib.context import CryptContext
@@ -20,7 +20,7 @@ async def register(user_data: UserCreate):
     user_exists = await User.filter(username=user_data.username).exists()
     if user_exists:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=400,
             detail="Usuário já existe",
         )
 
@@ -35,7 +35,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> T
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Credenciais inválidas",
             headers={"WWW-Authenticate": "Bearer"},
         )
