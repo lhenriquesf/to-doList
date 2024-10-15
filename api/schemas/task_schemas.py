@@ -11,10 +11,10 @@ class PostTask(BaseModel):
     done:bool = Field(default=False)
 
     @field_validator('task')
-    def check_not_empty(task):
-        if not task or task.strip() == "":
+    def check_not_empty(v):
+        if not v or v.strip() == "":
             raise ValueError("A tarefa não pode estar vazia.")
-        return task
+        return v
 
 
 
@@ -23,7 +23,7 @@ class PutTask(BaseModel):
     done:Optional[bool] = Field(None)
 
     @field_validator('task')
-    def check_not_empty(task):
-        if not task or task.strip() == "":
+    def check_not_empty(v):
+        if not v or v.strip() == "":
             raise ValueError("A tarefa não pode estar vazia.")
-        return task
+        return v
