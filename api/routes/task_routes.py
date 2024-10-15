@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
-from api.models.task_models import Task
 from api.schemas.task_schemas import GetTask, PostTask, PutTask
-from api.redis_config import redis_client
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.encoders import jsonable_encoder
+from api.redis_config import redis_client
+from api.models.task_models import Task
+from api.auth import get_current_user
 import json
 
 task_router = APIRouter(prefix="/api", tags=["Task"])
@@ -19,8 +20,9 @@ async def get_task():
     return tasks
 
 
-@task_router.post("/")
+@task_router.post("/",dependencies = [Depends(dependency=get_current_user)], status_code=201)
 async def post_task(body: PostTask):
+    print("Entrou na rota post_task")
     data = body.model_dump(exclude_unset=True)
     new_task = await Task.create(**data)
     
@@ -31,7 +33,7 @@ async def post_task(body: PostTask):
     return await GetTask.from_tortoise_orm(new_task)
 
 
-@task_router.put("/{key}")
+@task_router.put("/{key}", dependencies=[Depends(dependency=get_current_user)])
 async def update_task(key: int, body: PutTask):
     data = body.model_dump(exclude_unset=True)
     exists_task = await Task.filter(id=key).exists()
@@ -48,7 +50,7 @@ async def update_task(key: int, body: PutTask):
     return await GetTask.from_queryset_single(Task.get(id=key))
 
 
-@task_router.delete("/{key}")
+@task_router.delete("/{key}", dependencies = [Depends(dependency=get_current_user)])
 async def delete_task(key: int):
     exists_task = await Task.filter(id=key).exists()
     
