@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field, field_validator
-from typing import Optional
 from tortoise.contrib.pydantic import pydantic_model_creator
+from pydantic import BaseModel, Field, field_validator
 from api.models.task_models import Task
+from typing import Optional
+
 
 GetTask = pydantic_model_creator(Task, name="Task")
 
