@@ -5,10 +5,10 @@ incluindo a criação, leitura, atualização e exclusão de tarefas.
 As rotas são protegidas e requerem autenticação do usuário.
 """
 
+from fastapi import APIRouter, HTTPException, Depends
 from api.schemas.task_schemas import GetTask, PostTask, PutTask
 from api.models.task_models import Task
 from api.auth import get_current_user
-from fastapi import APIRouter, HTTPException, Depends
 
 task_router = APIRouter(prefix="/api", tags=["Task"])
 
